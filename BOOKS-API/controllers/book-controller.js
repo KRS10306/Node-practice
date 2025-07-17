@@ -75,3 +75,7 @@ module.exports = {
 // git remote add origin https://github.com/KRS10306/Node-practice.git
 // git branch -M main
 // git push -u origin main
+
+// git add .            # Stage all changes in current directory
+// git commit -m "First"   # Commit those changes
+//  git push origin main # Push to remote (optional)
