@@ -88,14 +88,63 @@ const loginUser = async (req, res) => {
     // }
   );
 
+  req.userToken = asignToken
+
+  // console.log(req.userToken)
   res.json({
     message: "Your token number is given below",
     token: asignToken,
   });
 };
 
+const changePassword = async (req,res) => {
+  try {
+    
+    const userId = req.user.userId
+    // "username": "John",
+    // "email": "john@gmail.com",
+    // "contact": 6549873210,
+    // "password": "9876543210"
+
+
+    
+    //extract old and new password 
+    const {oldPassword, newPassword} = req.body
+
+    //find the user
+    const user = await User.findById(userId)
+
+    const isPasswordMatch = await bcrypt.compare(oldPassword, user.password)
+
+    if (!isPasswordMatch) {
+      res.status(400).json({
+        message:"Old password in not valid please try again"
+      })
+    }
+
+    const salt = await bcrypt.genSalt(15)
+    const hash = await bcrypt.hash(newPassword, salt)
+
+    //Update user password
+    user.password = hash
+    await user.save()
+
+    return res.status(200).json({
+      message:"Password updated successfully"
+    })
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      message:"Internal server error"
+    })
+    
+  }
+}
+
 module.exports = {
   registerUser,
   getUsers,
   loginUser,
+  changePassword
 };
